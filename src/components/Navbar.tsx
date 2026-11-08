@@ -1,46 +1,111 @@
+
+
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { usePlan } from "@/context/PlanContext";
 
-const Navbar = () => {
-  const { planIds, savedIds } = usePlan();
+export default function Navbar() {
+  const pathname = usePathname();
+  const { plan, saved } = usePlan();
+
+  const isWorkoutActive =
+    pathname === "/" || pathname.startsWith("/workout");
+
+  const isPlanActive = pathname === "/my-plan";
 
   return (
-    <nav className="navbar bg-[#0c0d0f] px-4 text-white md:px-10">
-      <div className="flex-1">
-        <Link
-          href="/"
-          className="text-2xl font-black tracking-wider"
-        >
-          FIT<span className="text-[#b6ff00]">LOG</span>
-        </Link>
-      </div>
+    <>
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0c0d0f]/95 backdrop-blur-md">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 items-center px-4 py-5 sm:grid-cols-3 sm:px-6 lg:px-8">
 
-      <div className="flex items-center gap-3 md:gap-6">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2">
+            <span className="text-3xl text-[#b6ff00]">🏋️</span>
+            <span className="text-2xl font-black tracking-wide text-white">
+              FIT<span className="text-[#b6ff00]">LOG</span>
+            </span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center justify-center gap-8 sm:flex">
+            <Link
+              href="/"
+              className={`rounded-full px-5 py-3 text-sm font-bold transition ${
+                isWorkoutActive
+                  ? "bg-[#b6ff00]/10 text-[#b6ff00]"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              Workouts
+            </Link>
+
+            <Link
+              href="/my-plan"
+              className={`rounded-full px-5 py-3 text-sm font-bold transition ${
+                isPlanActive
+                  ? "bg-[#b6ff00]/10 text-[#b6ff00]"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              My Plan
+            </Link>
+          </nav>
+
+          {/* Plan & Saved Badges */}
+          <div className="flex items-center justify-end gap-4">
+            <Link
+              href="/my-plan"
+              className="flex items-center gap-2 text-sm text-gray-300 transition hover:text-white"
+            >
+              <span>Plan</span>
+              <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-[#b6ff00] px-2 font-bold text-black">
+                {plan.length}
+              </span>
+            </Link>
+
+            <Link
+              href="/my-plan"
+              className="flex items-center gap-2 text-sm text-gray-300 transition hover:text-white"
+            >
+              <span>Saved</span>
+              <span className="flex h-8 min-w-8 items-center justify-center rounded-full border border-white/20 px-2 text-white">
+                {saved.length}
+              </span>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-white/10 bg-[#151719] px-4 py-3 sm:hidden">
+
         <Link
           href="/"
-          className="text-sm font-medium hover:text-[#b6ff00]"
+          className={`flex flex-col items-center gap-1 text-xs font-semibold transition ${
+            isWorkoutActive
+              ? "text-[#b6ff00]"
+              : "text-gray-400"
+          }`}
         >
+          <span className="text-lg">🏋️</span>
           Workouts
         </Link>
 
         <Link
           href="/my-plan"
-          className="text-sm font-medium hover:text-[#b6ff00]"
+          className={`flex flex-col items-center gap-1 text-xs font-semibold transition ${
+            isPlanActive
+              ? "text-[#b6ff00]"
+              : "text-gray-400"
+          }`}
         >
-          My Plan
-          <span className="badge badge-sm ml-1 bg-[#b6ff00] text-black">
-            {planIds.length}
-          </span>
+          <span className="text-lg">📋</span>
+          My Plan ({plan.length})
         </Link>
 
-        <span className="hidden text-sm text-gray-400 sm:inline">
-          Saved: {savedIds.length}
-        </span>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
-};
-
-export default Navbar;
+}
