@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePlan } from "@/context/PlanContext";
 import Image from "next/image";
 
+
 type SortOption = "duration" | "calories" | "rating";
 type TabOption = "plan" | "saved";
 
@@ -202,16 +203,11 @@ export default function MyPlanSection() {
 
                   {/* Done Button - Only Plan Tab */}
                   {activeTab === "plan" && (
-                    <button
+                     <button
                       onClick={() => markAsDone(item.id)}
-                      disabled={item.isDone}
-                      className={`rounded-full px-5 py-3 text-sm font-bold transition ${
-                        item.isDone
-                          ? "cursor-not-allowed bg-gray-500 text-white"
-                          : "bg-[#b6ff00] text-black hover:bg-white"
-                      }`}
+                      className="rounded-full bg-[#b6ff00] px-5 py-3 text-sm font-bold text-black transition hover:bg-white"
                     >
-                      {item.isDone ? "✓ Done" : "Mark as Done"}
+                      ✓ Mark as Done
                     </button>
                   )}
 
