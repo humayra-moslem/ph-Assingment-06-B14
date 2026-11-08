@@ -3,122 +3,186 @@
 import {
   createContext,
   useContext,
-  useEffect,
   useState,
+  useEffect,
   type ReactNode,
 } from "react";
 
-import type { PlanContextType } from "@/types";
+import toast from "react-hot-toast";
+import type {
+  Workout,
+  PlanWorkout,
+  PlanContextType,
+} from "@/types";
 
-const PlanContext = createContext<PlanContextType | undefined>(
-  undefined,
-);
 
-export const PlanProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
-  const [planIds, setPlanIds] = useState<number[]>([]);
-  const [savedIds, setSavedIds] = useState<number[]>([]);
-  const [doneIds, setDoneIds] = useState<number[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+const PlanContext = createContext<PlanContextType | null>(null);
 
-  // Load data from localStorage
+export function PlanProvider({ children }: { children: ReactNode }) {
+  const [plan, setPlan] = useState<PlanWorkout[]>([]);
+  const [saved, setSaved] = useState<Workout[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  
   useEffect(() => {
-    try {
-      const plan = localStorage.getItem("fitlog-plan");
-      const saved = localStorage.getItem("fitlog-saved");
-      const done = localStorage.getItem("fitlog-done");
+  try {
+    const storedPlan = localStorage.getItem("fitlog-plan");
+    const storedSaved = localStorage.getItem("fitlog-saved");
 
-      if (plan) setPlanIds(JSON.parse(plan));
-      if (saved) setSavedIds(JSON.parse(saved));
-      if (done) setDoneIds(JSON.parse(done));
-    } catch (error) {
-      console.error("Error loading FitLog data:", error);
-    } finally {
-      setHydrated(true);
+    if (storedPlan) {
+      const parsedPlan = JSON.parse(storedPlan);
+
+      setPlan(
+        parsedPlan.map((item: PlanWorkout) => ({
+          ...item,
+          muscleGroups: Array.isArray(item.muscleGroups)
+            ? item.muscleGroups
+            : [],
+          instructions: Array.isArray(item.instructions)
+            ? item.instructions
+            : [],
+        }))
+      );
+
     }
-  }, []);
 
-  // Persist data
+    if (storedSaved) {
+      const parsedSaved = JSON.parse(storedSaved);
+
+      setSaved(
+        parsedSaved.map((item: Workout) => ({
+          ...item,
+          muscleGroups: Array.isArray(item.muscleGroups)
+            ? item.muscleGroups
+            : [],
+          instructions: Array.isArray(item.instructions)
+            ? item.instructions
+            : [],
+        }))
+      );
+    }
+  } catch (error) {
+    console.error("Error loading localStorage:", error);
+  } finally {
+    setIsHydrated(true);
+  }
+}, []);
+
+  // ─── 2. Save plan to localStorage ───
   useEffect(() => {
-    if (!hydrated) return;
+    if (isHydrated) {
+      localStorage.setItem("fitlog-plan", JSON.stringify(plan));
+    }
+  }, [plan, isHydrated]);
 
-    localStorage.setItem("fitlog-plan", JSON.stringify(planIds));
-    localStorage.setItem("fitlog-saved", JSON.stringify(savedIds));
-    localStorage.setItem("fitlog-done", JSON.stringify(doneIds));
-  }, [planIds, savedIds, doneIds, hydrated]);
+  // ─── 3. Save saved workouts to localStorage ───
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem("fitlog-saved", JSON.stringify(saved));
+    }
+  }, [saved, isHydrated]);
+  
 
-  // Add to Today's Plan (maximum 5)
-  const addToPlan = (id: number) => {
-    setPlanIds((prev) => {
-      if (prev.includes(id) || prev.length >= 5) return prev;
-      return [...prev, id];
-    });
+  // ─── 4. Add workout to plan ───
+  const addToPlan = (workout: Workout) => {
+    if (plan.length >= 5) {
+      toast.error("Today's plan is full! (Max 5)");
+      return;
+    }
 
-    // If added again, mark as not done
-    setDoneIds((prev) => prev.filter((item) => item !== id));
+    if (plan.some((item) => item.id === workout.id)) {
+      toast.error("Already in today's plan!");
+      return;
+    }
+
+    setPlan((prev) => [
+      ...prev,
+      { ...workout, isDone: false },
+    ]);
+
+    toast.success(`${workout.name} added to plan! 💪`);
   };
 
-  // Remove from Today's Plan
+  // ─── 5. Add workout to saved ───
+  const addToSaved = (workout: Workout) => {
+    if (saved.some((item) => item.id === workout.id)) {
+      toast.error("Already saved!");
+      return;
+    }
+
+    setSaved((prev) => [...prev, workout]);
+
+    toast.success(`${workout.name} saved for later!`);
+  };
+
+  // ─── 6. Remove from plan ───
   const removeFromPlan = (id: number) => {
-    setPlanIds((prev) => prev.filter((item) => item !== id));
-    setDoneIds((prev) => prev.filter((item) => item !== id));
+    setPlan((prev) => prev.filter((item) => item.id !== id));
+
+    toast.success("Removed from plan");
   };
 
-  // Save or unsave
-  const toggleSaved = (id: number) => {
-    setSavedIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id],
-    );
-  };
-
-  // Remove from Saved
+  // ─── 7. Remove from saved ───
   const removeFromSaved = (id: number) => {
-    setSavedIds((prev) => prev.filter((item) => item !== id));
+    setSaved((prev) => prev.filter((item) => item.id !== id));
+
+    toast.success("Removed from saved");
   };
 
-  // Mark workout as completed
+  // ─── 8. Mark workout as done ───
   const markAsDone = (id: number) => {
-    setDoneIds((prev) =>
-      prev.includes(id) ? prev : [...prev, id],
+    setPlan((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, isDone: true }
+          : item
+      )
     );
+
+    toast.success("Workout done! Great job! 🎉");
   };
 
-  const isInPlan = (id: number) => planIds.includes(id);
-  const isSaved = (id: number) => savedIds.includes(id);
-  const isDone = (id: number) => doneIds.includes(id);
+
+  // ─── 9. Calculate metrics ───
+  const metrics = {
+    exercises: plan.length,
+
+    minutes: plan.reduce(
+      (total, item) => total + item.duration,
+      0
+    ),
+
+    calories: plan.reduce(
+      (total, item) => total + item.caloriesBurned,
+      0
+    ),
+  };
+
+  const value: PlanContextType = {
+    plan,
+    saved,
+    addToPlan,
+    addToSaved,
+    removeFromPlan,
+    removeFromSaved,
+    markAsDone,
+    metrics,
+  };
 
   return (
-    <PlanContext.Provider
-      value={{
-        planIds,
-        savedIds,
-        doneIds,
-        addToPlan,
-        removeFromPlan,
-        toggleSaved,
-        removeFromSaved,
-        markAsDone,
-        isInPlan,
-        isSaved,
-        isDone,
-      }}
-    >
+    <PlanContext.Provider value={value}>
       {children}
     </PlanContext.Provider>
   );
-};
+}
 
-export const usePlan = () => {
+// ─── Custom Hook ───
+export function usePlan() {
   const context = useContext(PlanContext);
 
   if (!context) {
-    throw new Error("usePlan must be used inside PlanProvider");
+    throw new Error("usePlan must be used within a PlanProvider");
   }
 
   return context;
-};
+}
