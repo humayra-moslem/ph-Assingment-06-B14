@@ -2,10 +2,7 @@
 
 FitLog is a fitness and workout planning web application designed to help users explore workouts, create personalized workout plans, save their favorite exercises, and track their fitness progress. Users can browse different workouts, view detailed exercise information, organize their daily routines, and mark exercises as completed, all through a simple and interactive interface.
 
-## 🚀 Live Demo
 
-- **Live Website:** [Add Your Vercel Deployment URL]
-- **GitHub Repository:** [Add Your GitHub Repository URL]
 
 ## 🛠️ Technologies Used
 
@@ -45,25 +42,6 @@ FitLog is a fitness and workout planning web application designed to help users 
 - Sort workouts by duration, calories burned, and rating
 - Track completed exercises to stay consistent with your fitness goals
 
-## 📦 Getting Started
-
-1. Clone the repository
-   ```bash
-   git clone [Add Your GitHub Repository URL]
-   cd fitlog
-   ```
-
-2. Install dependencies
-   ```bash
-   npm install
-   ```
-
-3. Run the development server
-   ```bash
-   npm run dev
-   ```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 👤 Author
 
