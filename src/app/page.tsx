@@ -1,5 +1,5 @@
-import Hero from "@/components/Hero";
-import LibrarySection from "@/components/LibrarySection";
+import Hero from "@/components/HeroBanner";
+import LibrarySection from "@/components/Library";
 import { getWorkouts } from "@/utils/api";
 
 const HomePage = async () => {
