@@ -17,7 +17,6 @@ export default function MyPlanSection() {
 
   const visibleList = activeTab === "plan" ? plan : saved;
 
-  
   const sortedList = useMemo(() => {
     return [...visibleList].sort((a, b) => {
       if (sortBy === "duration") {
@@ -203,18 +202,17 @@ export default function MyPlanSection() {
 
                   {/* Done Button - Only Plan Tab */}
                   {activeTab === "plan" && (
-                   
-                   <button
-  onClick={() => markAsDone(item.id)}
-  disabled={item.isDone}
-  className={`rounded-full px-5 py-3 text-sm font-bold transition ${
-    item.isDone
-      ? "cursor-not-allowed bg-gray-500 text-white"
-      : "bg-[#b6ff00] text-black hover:bg-white"
-  }`}
->
-  {item.isDone ? "✓ Done" : "Mark as Done"}
-</button>
+                    <button
+                      onClick={() => markAsDone(item.id)}
+                      disabled={item.isDone}
+                      className={`rounded-full px-5 py-3 text-sm font-bold transition ${
+                        item.isDone
+                          ? "cursor-not-allowed bg-gray-500 text-white"
+                          : "bg-[#b6ff00] text-black hover:bg-white"
+                      }`}
+                    >
+                      {item.isDone ? "✓ Done" : "Mark as Done"}
+                    </button>
                   )}
 
                   {/* Remove Button */}
