@@ -1,12 +1,14 @@
 
 
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePlan } from "@/context/PlanContext";
+import { Suspense } from "react";
 
-export default function Navbar() {
+function NavbarContent() {
   const pathname = usePathname();
   const { plan, saved } = usePlan();
 
@@ -80,13 +82,10 @@ export default function Navbar() {
 
       {/* Mobile Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-white/10 bg-[#151719] px-4 py-3 sm:hidden">
-
         <Link
           href="/"
           className={`flex flex-col items-center gap-1 text-xs font-semibold transition ${
-            isWorkoutActive
-              ? "text-[#b6ff00]"
-              : "text-gray-400"
+            isWorkoutActive ? "text-[#b6ff00]" : "text-gray-400"
           }`}
         >
           <span className="text-lg">🏋️</span>
@@ -96,16 +95,26 @@ export default function Navbar() {
         <Link
           href="/my-plan"
           className={`flex flex-col items-center gap-1 text-xs font-semibold transition ${
-            isPlanActive
-              ? "text-[#b6ff00]"
-              : "text-gray-400"
+            isPlanActive ? "text-[#b6ff00]" : "text-gray-400"
           }`}
         >
           <span className="text-lg">📋</span>
           My Plan ({plan.length})
         </Link>
-
       </nav>
     </>
   );
 }
+
+export default function Navbar() {
+  return (
+    <Suspense
+      fallback={
+        <div className="h-[76px] border-b border-white/10 bg-[#0c0d0f]" />
+      }
+    >
+      <NavbarContent />
+    </Suspense>
+  );
+}
+

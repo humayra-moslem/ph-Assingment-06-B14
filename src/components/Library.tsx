@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -15,6 +17,7 @@ export default function LibrarySection() {
   const [error, setError] = useState("");
 
   
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -32,7 +35,6 @@ export default function LibrarySection() {
     loadData();
   }, []);
 
- 
 
   if (loading) {
     return (
@@ -53,7 +55,6 @@ export default function LibrarySection() {
     );
   }
 
-  
 
   if (error) {
     return (
@@ -76,8 +77,6 @@ export default function LibrarySection() {
       </section>
     );
   }
-
-
 
   return (
     <section
