@@ -1,28 +1,47 @@
+
 import Link from "next/link";
 
-const NotFound = () => {
+export default function NotFound() {
   return (
-    <main className="flex min-h-[70vh] flex-col items-center justify-center bg-[#0c0d0f] px-5 text-center text-white">
-      <h1 className="text-7xl font-black text-[#b6ff00]">
-        404
-      </h1>
+    <main className="flex min-h-[80vh] items-center justify-center bg-[#0c0d0f] px-4 py-16 text-white">
+      <div className="mx-auto max-w-xl text-center">
 
-      <h2 className="mt-5 text-2xl font-bold">
-        Workout Not Found
-      </h2>
+        {/* 404 Number */}
+        <h1 className="text-8xl font-black tracking-tighter text-[#b6ff00] sm:text-9xl">
+          404
+        </h1>
 
-      <p className="mt-3 text-gray-400">
-        Sorry, the workout you are looking for does not exist.
-      </p>
+        {/* Heading */}
+        <h2 className="mt-4 text-3xl font-black uppercase sm:text-4xl">
+          Page Not Found
+        </h2>
 
-      <Link
-        href="/"
-        className="btn mt-7 border-none bg-[#b6ff00] text-black hover:bg-lime-400"
-      >
-        Back to Home
-      </Link>
+        {/* Description */}
+        <p className="mx-auto mt-5 max-w-md text-sm leading-7 text-gray-400 sm:text-base">
+          Looks like you've wandered off track! The page you're looking
+          for doesn't exist or may have been moved.
+          Don't worry, your fitness journey is still on track.
+        </p>
+
+        {/* Icon */}
+        <div className="my-8 text-6xl">
+          🏋️
+        </div>
+
+        {/* Button */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#b6ff00] px-8 py-4 text-sm font-black uppercase text-black transition duration-300 hover:-translate-y-1 hover:bg-white"
+        >
+          ← Back to Workouts
+        </Link>
+
+        {/* Footer Text */}
+        <p className="mt-10 text-xs tracking-widest text-gray-600">
+          FITLOG — TRAIN WITH INTENT. LOG EVERY SET.
+        </p>
+
+      </div>
     </main>
   );
-};
-
-export default NotFound;
+}

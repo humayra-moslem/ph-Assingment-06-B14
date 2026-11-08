@@ -1,16 +1,13 @@
-import Hero from "@/components/HeroBanner";
-import LibrarySection from "@/components/Library";
-import { getWorkouts } from "@/utils/api";
+import HeroBanner from "@/components/HeroBanner";
+import LibraryPage from "@/components/Library";
 
-const HomePage = async () => {
-  const workouts = await getWorkouts();
-
+const page = () => {
   return (
-    <>
-      <Hero />
-      <LibrarySection workouts={workouts} />
-    </>
+    <div>
+      <HeroBanner />
+      <LibraryPage />
+    </div>
   );
 };
 
-export default HomePage;
+export default page;
