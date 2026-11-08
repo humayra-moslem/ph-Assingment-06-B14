@@ -50,12 +50,20 @@
 
 import { Workout } from "@/types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+const getApiUrl = (): string => {
+  if (!API_URL) {
+    throw new Error("NEXT_PUBLIC_API_URL is not configured");
+  }
+
+  return API_URL;
+};
 
 // Get all workouts
 export const getWorkouts = async (): Promise<Workout[]> => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(getApiUrl(), {
       cache: "no-store",
     });
 
@@ -75,7 +83,7 @@ export const getWorkoutById = async (
   id: string,
 ): Promise<Workout | null> => {
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${getApiUrl()}/${id}`, {
       cache: "no-store",
     });
 
@@ -91,3 +99,4 @@ export const getWorkoutById = async (
     return null;
   }
 };
+
